@@ -1,0 +1,8 @@
+GitHub upload instructions
+
+1. Create a new repository, e.g. photon-osint-recon-notes.
+2. Upload README.md at the repository root.
+3. Upload the entire images/ folder with the three image files inside it.
+4. Commit the files. GitHub will render README.md and display the screenshots.
+
+The screenshot of external.txt has been redacted for privacy. Check all images and text once more before making the repository public.
