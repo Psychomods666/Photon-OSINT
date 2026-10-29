@@ -1,12 +1,4 @@
-from pathlib import Path
-import zipfile
-
-base = Path("/mnt/data")
-project = base / "Photon-OSINT-Notes"
-images = project / "images"
-images.mkdir(parents=True, exist_ok=True)
-
-readme = r'''<div align="center">
+<div align="center">
 
 # ◈ PSYCHOMODS / SECURITY LAB
 
@@ -178,47 +170,3 @@ The screenshots below document the terminal workflow. The first image is environ
 <sub>Personal lab notes · Cybersecurity education · Not an official Photon project</sub>
 
 </div>
-'''
-(project / "README.md").write_text(readme, encoding="utf-8")
-(project / "UPLOAD-NOTES.txt").write_text(
-    "GitHub upload notes\n\n"
-    "1. Create a repository such as photon-osint-recon-notes.\n"
-    "2. Upload README.md at the repository root.\n"
-    "3. Upload the images/ folder with all three image files.\n"
-    "4. Commit the files. GitHub will render the README and its screenshots.\n\n"
-    "Before making the repository public, verify the target domain and all remaining identifying details are appropriate to disclose.\n",
-    encoding="utf-8"
-)
-
-# Confirm all screenshot files exist from the earlier package.
-expected = ["01-linux-user-setup.jpg", "02-photon-setup-and-run.jpg", "03-photon-results-redacted.jpg"]
-missing = [name for name in expected if not (images / name).exists()]
-if missing:
-    from PIL import Image, ImageDraw
-    srcs = [base/"1000555420.jpg", base/"1000555422.jpg", base/"1000555421.jpg"]
-    for src, name in zip(srcs, expected):
-        if (images / name).exists():
-            continue
-        im = Image.open(src).convert("RGB")
-        if name == expected[2]:
-            draw = ImageDraw.Draw(im)
-            draw.rectangle((0, 830, 720, 944), fill=(0, 0, 0))
-            draw.text((10, 845), "[redacted for privacy before public sharing]", fill=(210, 210, 210))
-        elif name == expected[0]:
-            draw = ImageDraw.Draw(im)
-            draw.rectangle((85, 90, 285, 145), fill=(0, 0, 0))
-            draw.text((95, 105), "sudo adduser [user]", fill=(120, 200, 120))
-            draw.rectangle((340, 242, 455, 269), fill=(0, 0, 0))
-            draw.text((346, 246), "[user]", fill=(210, 210, 210))
-        im.save(images / name, quality=90, optimize=True)
-
-zip_path = base / "Photon-OSINT-Notes-GitHub.zip"
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for p in project.rglob("*"):
-        if p.is_file():
-            z.write(p, p.relative_to(base))
-
-print("Updated README and ZIP successfully.")
-print("README:", project / "README.md")
-print("ZIP:", zip_path)
-print("Images:", [p.name for p in sorted(images.glob("*"))])
