@@ -1,143 +1,224 @@
-# Photon OSINT Reconnaissance Lab
+from pathlib import Path
+import zipfile
 
-> **Educational lab notes by [PsychoMods](https://github.com/Psychomods666)**  
-> Tool: [Photon by s0md3v](https://github.com/s0md3v/Photon) · Focus: website footprinting and reconnaissance
+base = Path("/mnt/data")
+project = base / "Photon-OSINT-Notes"
+images = project / "images"
+images.mkdir(parents=True, exist_ok=True)
 
-This repository documents a controlled, educational run of **Photon**, an open-source web-crawling and OSINT reconnaissance tool. The goal is to understand how a crawler discovers a website's internal links, external links, and other publicly exposed web resources.
+readme = r'''<div align="center">
 
-## Contents
+# ◈ PSYCHOMODS / SECURITY LAB
 
-- [Overview](#overview)
-- [Lab environment](#lab-environment)
-- [Workflow](#workflow)
-- [Screenshots](#screenshots)
-- [Understanding the output](#understanding-the-output)
-- [What I learned](#what-i-learned)
-- [Safety and responsible use](#safety-and-responsible-use)
-- [References](#references)
+### PHOTON — OSINT RECONNAISSANCE
 
-## Overview
+**A practical lab journal for website footprinting, crawling, and responsible reconnaissance.**
 
-Photon automates parts of website reconnaissance by crawling a supplied URL and collecting information exposed through the website. Depending on the selected options and the target's public content, results may include internal URLs, external links, JavaScript-related resources, files, and other crawl findings.
+[![Tool](https://img.shields.io/badge/TOOL-Photon-111827?style=for-the-badge&logo=github&logoColor=white)](https://github.com/s0md3v/Photon)
+[![Focus](https://img.shields.io/badge/FOCUS-OSINT%20%2F%20RECON-7C3AED?style=for-the-badge)](#overview)
+[![Purpose](https://img.shields.io/badge/PURPOSE-EDUCATION-84CC16?style=for-the-badge&logo=bookstack&logoColor=111827)](#responsible-use)
+[![Profile](https://img.shields.io/badge/GITHUB-PsychoMods-181717?style=for-the-badge&logo=github)](https://github.com/Psychomods666)
 
-This is **documentation of a learning exercise**, not a claim that the target is vulnerable or compromised. A crawler's output is a starting point for manual review—not proof of a security issue.
+[Overview](#overview) · [Lab workflow](#lab-workflow) · [Evidence](#lab-evidence) · [Key findings](#key-findings) · [Ethics](#responsible-use)
 
-## Lab environment
+---
 
-The screenshots show a Linux terminal session with:
+</div>
 
-- Python virtual environment: `venv`
-- Python package installation from `requirements.txt`
-- Photon command-line execution
-- Output saved to a target-named results directory
+## `01` / Overview
 
-The screenshots are included as supporting evidence. Identifying details in the output screenshot have been redacted for privacy before publication.
+**Photon** is an open-source web crawler designed to support reconnaissance and information gathering from a supplied website. In an authorized assessment, crawling can help map links and identify publicly reachable resources that deserve closer manual review.
 
-## Workflow
+This repository documents a learning exercise with a Linux terminal and Photon. It records the workflow, selected output, and takeaways—not a claim that the target is vulnerable, compromised, or fully assessed.
 
-### 1. Obtain the project
+> [!NOTE]
+> **Scope:** Educational documentation only. Run scans only against systems you own or have explicit permission to assess.
 
-Use the upstream repository and review its instructions before installing:
+## `02` / Lab snapshot
+
+| Item | Details |
+|:--|:--|
+| Tool | [Photon](https://github.com/s0md3v/Photon) |
+| Category | OSINT · Web crawling · Footprinting |
+| Environment shown | Linux terminal |
+| Runtime setup | Python virtual environment (`venv`) |
+| Dependency source | `requirements.txt` |
+| Evidence | Three terminal screenshots |
+| Objective | Understand crawl workflow and interpret output responsibly |
+
+## `03` / Lab workflow
+
+### Step 1 — Get the source
+
+Use the official upstream repository and read its current instructions before installing.
 
 ```bash
 git clone https://github.com/s0md3v/Photon.git
 cd Photon
 ```
 
-If the directory already exists, do **not** clone over it. Enter the existing folder and review its contents first.
+If a `Photon` directory already exists, do not clone over it. Inspect the existing folder and confirm that it is the expected repository.
 
-### 2. Create and activate a virtual environment
+### Step 2 — Create an isolated Python environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Install dependencies
+A virtual environment keeps project dependencies separate from system-wide Python packages.
+
+### Step 3 — Install dependencies
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Use the Python version supported by the upstream project and its dependencies. If installation fails, read the error and check the project's current documentation rather than forcing incompatible packages.
+Use a Python version supported by the current project and its dependencies. If an install fails, review the error and the upstream documentation rather than forcing incompatible packages.
 
-### 4. Run a crawl against an authorized target
+### Step 4 — Run against an authorized target
 
-The screenshots document this example command format:
+Example command format:
 
 ```bash
 python photon.py -u example.com
 ```
 
-Replace `example.com` only with a domain you own or have explicit permission to assess. Review Photon’s current help and documentation for supported options, crawl depth, rate controls, and output behavior.
+Replace `example.com` only with a domain you own or are explicitly authorized to assess. Check the tool's current help and documentation for available options and output behavior.
 
-### 5. Review the generated results
+### Step 5 — Review the generated files
 
-Photon saves its findings in an output directory named for the target by default (unless a custom output directory is selected). In the recorded run, the terminal reported:
+Inspect the generated output directory and its text files. In the documented run, the terminal displayed the summary below.
 
-- **26 total requests**
-- **4 seconds** total runtime
-- **5 requests per second**
-- **69 internal links** and **4 external links** reported in the displayed summary
+## `04` / Key findings
 
-These are the values shown in this particular terminal run; results will vary by website, network conditions, configuration, and tool version.
+<div align="center">
 
-## Screenshots
+| 26 | 69 | 4 |
+|:---:|:---:|:---:|
+| **Requests made** | **Internal links** | **External links** |
 
-### 1. Creating a local Linux user
+**Elapsed time:** 4 seconds &nbsp; · &nbsp; **Reported request rate:** 5 requests/second
 
-![Linux user creation terminal](images/01-linux-user-setup.jpg)
+</div>
 
-This screenshot records a Linux `adduser` workflow. It is included as environment/setup context, not as a Photon feature.
+These values are from the specific terminal run shown in the screenshots. Results vary with the target, network, configuration, and tool version. “Internal” and “external” counts are crawler output—not a security rating.
 
-### 2. Preparing and running Photon
+## `05` / Lab evidence
 
-![Photon setup and command-line run](images/02-photon-setup-and-run.jpg)
+The screenshots below document the terminal workflow. The first image is environment/setup context; it is not a Photon feature.
 
-This screenshot shows an existing Photon directory, virtual-environment activation, dependency installation, and a command-line crawl.
+### A — Linux user setup
 
-### 3. Reviewing crawl results
+![Linux user setup terminal](images/01-linux-user-setup.jpg)
 
-![Photon crawl results and redacted external links](images/03-photon-results-redacted.jpg)
+<sub>Terminal evidence · Local Linux account creation workflow</sub>
 
-This screenshot shows the crawl summary and result-file review. External profile links and contact details have been redacted in this public version.
+### B — Photon environment and execution
 
-## Understanding the output
+![Photon setup and run](images/02-photon-setup-and-run.jpg)
 
-- **Internal links** generally refer to URLs on the same website discovered during crawling.
-- **External links** are links from the target website to other domains.
-- **JavaScript-related results** can help an analyst identify client-side resources worth reviewing.
-- **Files and endpoints** may reveal publicly linked documents or application routes.
+<sub>Terminal evidence · Existing project directory, virtual environment, dependencies, and crawl command</sub>
 
-A discovered URL is not automatically sensitive, exploitable, or a vulnerability. Verify findings manually, record the source and timestamp, and avoid collecting or publishing unnecessary personal information.
+### C — Crawl summary and result review
 
-## What I learned
+![Photon crawl results with private details redacted](images/03-photon-results-redacted.jpg)
 
-- How to work inside a Python virtual environment.
-- How to install a tool's Python dependencies.
-- How to run a command-line web crawler against a specified URL.
-- How to locate and inspect generated text output.
-- Why crawl results require validation and careful handling before being shared.
+<sub>Terminal evidence · Crawl summary and review of generated output. Personal profile/contact details should remain redacted in public copies.</sub>
 
-## Safety and responsible use
+## `06` / Reading the output
 
-- Test only on systems you own or have explicit written authorization to assess.
-- Follow applicable laws, site terms, and the scope of any assessment.
-- Use conservative crawl settings; aggressive crawling can burden services or trigger security controls.
+| Finding | What it generally means | What to do next |
+|:--|:--|:--|
+| Internal links | URLs on the same site discovered by the crawler | Check relevant routes manually and within scope |
+| External links | Links from the site to other domains | Confirm context; avoid profiling individuals |
+| JavaScript resources | Client-side scripts or references found during crawling | Review only where authorized |
+| Publicly linked files or routes | Resources reachable or referenced by the site | Confirm exposure and business context before calling anything a finding |
+
+**Important:** a discovered URL is not automatically sensitive, exploitable, or a vulnerability. Validate observations manually, keep notes on evidence and timestamps, and separate facts from assumptions.
+
+## `07` / What this lab taught me
+
+- Setting up and activating a Python virtual environment.
+- Installing dependencies from a project's requirements file.
+- Running a command-line web crawler against a specified URL.
+- Finding and reviewing generated text output.
+- Interpreting crawl statistics without overstating their meaning.
+- Redacting identifying information before publishing technical evidence.
+
+## `08` / Responsible use
+
+- Test only systems you own or have explicit written authorization to assess.
+- Respect legal requirements, site terms, and the agreed assessment scope.
+- Use conservative settings; crawling can create load or trigger defensive systems.
 - Do not use results to harass, profile, or expose private individuals.
-- Never commit credentials, session cookies, API keys, private messages, personal phone numbers, or unredacted target data.
-- Treat discovered secrets as sensitive: do not test or use them; notify the system owner through an appropriate channel.
-- Keep reports factual and distinguish observed data from assumptions.
+- Never publish credentials, session cookies, API keys, private messages, personal phone numbers, or unredacted target data.
+- If a potential secret is discovered, do not use it or attempt access; report it to the owner through an appropriate channel.
+- Keep reports factual, minimal, and reproducible.
 
-## References
+## `09` / References & links
 
-- [Photon source repository](https://github.com/s0md3v/Photon)
-- [Photon usage documentation](https://github.com/s0md3v/Photon/wiki/Usage)
-- [PsychoMods GitHub profile](https://github.com/Psychomods666)
+<div align="center">
+
+[![Photon Repository](https://img.shields.io/badge/Photon-Source%20Repository-181717?style=flat-square&logo=github)](https://github.com/s0md3v/Photon)
+[![Photon Usage](https://img.shields.io/badge/Photon-Usage%20Guide-7C3AED?style=flat-square&logo=readthedocs&logoColor=white)](https://github.com/s0md3v/Photon/wiki/Usage)
+[![PsychoMods](https://img.shields.io/badge/PsychoMods-GitHub-84CC16?style=flat-square&logo=github&logoColor=111827)](https://github.com/Psychomods666)
+
+</div>
 
 ---
 
-**Author:** PsychoMods  
-**Purpose:** Cybersecurity education, authorized reconnaissance, and OSINT learning  
-**Status:** Personal lab notes; not an official Photon project
+<div align="center">
+
+**PSYCHOMODS · TECH LAB**
+
+*Learn responsibly. Verify carefully. Document clearly.*
+
+<sub>Personal lab notes · Cybersecurity education · Not an official Photon project</sub>
+
+</div>
+'''
+(project / "README.md").write_text(readme, encoding="utf-8")
+(project / "UPLOAD-NOTES.txt").write_text(
+    "GitHub upload notes\n\n"
+    "1. Create a repository such as photon-osint-recon-notes.\n"
+    "2. Upload README.md at the repository root.\n"
+    "3. Upload the images/ folder with all three image files.\n"
+    "4. Commit the files. GitHub will render the README and its screenshots.\n\n"
+    "Before making the repository public, verify the target domain and all remaining identifying details are appropriate to disclose.\n",
+    encoding="utf-8"
+)
+
+# Confirm all screenshot files exist from the earlier package.
+expected = ["01-linux-user-setup.jpg", "02-photon-setup-and-run.jpg", "03-photon-results-redacted.jpg"]
+missing = [name for name in expected if not (images / name).exists()]
+if missing:
+    from PIL import Image, ImageDraw
+    srcs = [base/"1000555420.jpg", base/"1000555422.jpg", base/"1000555421.jpg"]
+    for src, name in zip(srcs, expected):
+        if (images / name).exists():
+            continue
+        im = Image.open(src).convert("RGB")
+        if name == expected[2]:
+            draw = ImageDraw.Draw(im)
+            draw.rectangle((0, 830, 720, 944), fill=(0, 0, 0))
+            draw.text((10, 845), "[redacted for privacy before public sharing]", fill=(210, 210, 210))
+        elif name == expected[0]:
+            draw = ImageDraw.Draw(im)
+            draw.rectangle((85, 90, 285, 145), fill=(0, 0, 0))
+            draw.text((95, 105), "sudo adduser [user]", fill=(120, 200, 120))
+            draw.rectangle((340, 242, 455, 269), fill=(0, 0, 0))
+            draw.text((346, 246), "[user]", fill=(210, 210, 210))
+        im.save(images / name, quality=90, optimize=True)
+
+zip_path = base / "Photon-OSINT-Notes-GitHub.zip"
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for p in project.rglob("*"):
+        if p.is_file():
+            z.write(p, p.relative_to(base))
+
+print("Updated README and ZIP successfully.")
+print("README:", project / "README.md")
+print("ZIP:", zip_path)
+print("Images:", [p.name for p in sorted(images.glob("*"))])
